@@ -80,70 +80,6 @@ public class MyBoard implements Board {
 		
 		return yellowCaptures;
 	}
-
-	
-	public boolean gameOverOrig() {
-		
-		// check captures
-		if (redCaptures == 5) {
-			winner = Stone.RED;
-			return true;
-		} else if (yellowCaptures == 5) {
-			winner = Stone.YELLOW;
-			return true;
-		}
-		
-		// check for 5 in a row
-		Stone result;
-		
-		// check rows and columns
-		for (int i = 0; i < 19; i++) {				
-			
-			// row
-			result = scanRowOrColumn(true, i);
-			
-			if (result != Stone.EMPTY) {
-				winner = result;
-				return true;
-			}
-			
-			// column
-			result = scanRowOrColumn(false, i);
-			
-			if (result != Stone.EMPTY) {
-				winner = result;
-				return true;
-			}
-		}
-		
-		// check diagonals
-		for (int i = 0; 	i < 19; i++) { // rows
-			for (int j = 0; j < 19; j++) { // columns
-				
-				// ascending diagonals too short outside certain indices
-				if (i > 3 && j < 15) {
-					result = scanDiagonal(true, i, j);
-					
-					if (result != Stone.EMPTY) {
-						winner = result;
-						return true;
-					}
-				}
-				
-				// descending diagonals too short outside certain indices
-				if (i < 15 && j < 15) {
-					result = scanDiagonal(false, i, j);
-					
-					if (result != Stone.EMPTY) {
-						winner = result;
-						return true;
-					}
-				}
-			}
-		}
-		
-		return false;
-	}
 	
 	@Override
 	public boolean gameOver() {
@@ -177,15 +113,14 @@ public class MyBoard implements Board {
 					return true;
 				}
 				
-				// ascending diagonals too short outside certain indices
+				// ascending diagonals
 				if (i > 3 && j < 15) result = checkFive(2, i, j);
 				if (result != Stone.EMPTY) {
 					winner = result;
 					return true;
 				}
 				
-				
-				// descending diagonals too short outside certain indices
+				// descending diagonals
 				if (i < 15 && j < 15) result = checkFive(3, i, j);
 				if (result != Stone.EMPTY) {
 					winner = result;
@@ -198,129 +133,20 @@ public class MyBoard implements Board {
 	}
 	
 	/**
-	 * Checks row or column for five stones of the same type (not empty) and
-	 * returns the type
-	 * @param row		true: will scan a row; false: will scan a column
-	 * @param index		board index of row or column
-	 * @return			Stone of winner's type or Stone.EMPTY if no winner
-	 */
-	private Stone scanRowOrColumn(boolean row, int index) {
-		
-		Stone current, previous = Stone.EMPTY;
-		int count = 0;
-		
-		for (int i = 0; i < 19; i++) {
-			
-			// scan row or column depending on parameter
-			if (row) {
-				current = board[index][i];
-			} else {
-				current = board[i][index];
-			}
-			
-			// check current stone type, increment count as appropriate
-			if (current == Stone.EMPTY) {
-				
-				count = 0;
-				
-			} else if (current == Stone.RED) {
-				
-				if (previous != Stone.RED) count = 0;
-				count++;
-				
-			} else {
-				
-				if (previous != Stone.YELLOW) count = 0;
-				count++;
-				
-			}
-			
-			// if count is 5, return the winner
-			if (count == 5) {
-				if (current == Stone.RED) {
-					
-					return Stone.RED;
-					
-				} else {
-					
-					return Stone.YELLOW;
-				}
-			}
-			
-			previous = current;
-		}
-		
-		return Stone.EMPTY;
-	}
-	
-	/**
-	 * Checks diagonal for five stones of the same type (not empty) and
-	 * returns the type
-	 * @param ascending		true: index increasing; false: index decreasing
-	 * @param r			starting tile row
-	 * @param c			starting tile column
-	 * @return
-	 */
-	private Stone scanDiagonal(boolean ascending, int r, int c) {
-				
-		Stone current, previous = Stone.EMPTY;
-		int count = 0, row = r, column = c;
-		
-		while (row >= 0 && row < 19 && column >= 0 && column < 19) {
-			
-			current = board[row][column];
-			
-			// check current stone type, increment count as appropriate
-			if (current == Stone.EMPTY) {
-				
-				count = 0;
-				
-			} else if (current == Stone.RED) {
-				
-				if (previous != Stone.RED) count = 0;
-				count++;
-				
-			} else {
-				
-				if (previous != Stone.YELLOW) count = 0;
-				count++;
-				
-			}
-			
-			// if count is 5, return the winner
-			if (count == 5) {
-				if (current == Stone.RED) {
-					
-					return Stone.RED;
-					
-				} else {
-					
-					return Stone.YELLOW;
-				}
-			}
-			
-			// increment or decrement indices per parameter
-			if (ascending) { // e.g. from bottom-left to top-right
-				row--;
-				column++;
-			} else { // e.g. from top-left to bottom-right
-				row++;
-				column++;
-			}
-			
-			previous = current;			
-		}
-		
-		return Stone.EMPTY;
-	}
-	
-	/**
-	 * Checks diagonal for five stones of the same type (not empty) and
-	 * returns the type
-	 * @param ascending		true: index increasing; false: index decreasing
-	 * @param r			starting tile row
-	 * @param c			starting tile column
-	 * @return
+	 * Checks rows, columns, or ascending or descending diagonals for five 
+	 * stones in a row and immediately returns the type if found
+	 * 
+	 * Must be initiated for a specific tile, after which it will scan from
+	 * that tile per the direction parameter
+	 * 
+	 * @param direction		0: check row
+	 * 						1: check column
+	 * 						2: check ascending diagonal
+	 * 						3: check descending diagonal
+	 * @param r				starting tile row
+	 * @param c				starting tile column
+	 * @return				Stone type of five in a row if found;
+	 * 						Stone.EMPTY otherwise
 	 */
 	private Stone checkFive(int direction, int r, int c) {
 		
@@ -342,26 +168,19 @@ public class MyBoard implements Board {
 				
 			} else if (current == Stone.RED) {
 				
-				if (previous != Stone.RED) count = 0;
-				count++;
+				if (previous != Stone.RED) count = 1;
+				else count++;
 				
 			} else {
 				
-				if (previous != Stone.YELLOW) count = 0;
-				count++;
+				if (previous != Stone.YELLOW) count = 1;
+				else count++;
 				
 			}
 			
 			// if count is 5, return the winner
 			if (count == 5) {
-				if (current == Stone.RED) {
-					
-					return Stone.RED;
-					
-				} else {
-					
-					return Stone.YELLOW;
-				}
+				return current;
 			}
 			
 			// increment/decrement row and/or column depending upon specification
@@ -395,10 +214,12 @@ public class MyBoard implements Board {
 	}
 	
 	/**
-	 * The board should be printed as a grid:
-	 * Red Stones should print as an "O" character (capital O)
-	 * Yellow Stones should print as an "X" character (capital X)
-	 * Empty Stones should print as a space character " "
+	 * The board is printed as a grid:
+	 * Red Stones as an "O" character (capital O)
+	 * Yellow Stones as an "X" character (capital X)
+	 * Empty Stones as a space character " "
+	 * Board demarcated by "-" characters
+	 * Rows marked 0-18, columns A-S
 	 */	
 	@Override
 	public String toString() {
