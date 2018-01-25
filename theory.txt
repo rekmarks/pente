@@ -1,0 +1,22 @@
+
+  CIT594 - HW1 - Theory
+  Erik Marks
+  
+  1. Assumptions:
+        - Elements are placed in ascending order
+        - There will be exactly one repeated number in the array
+        
+     Pseudocode:
+    
+     findRepeated (array A) {
+        
+        for (int i = 1; i < A.length; i++) {
+        
+            if (A[i-1] == A[i]) return A[i];
+        }
+     }
+     
+  2a. O(n)
+  2b. 
+  
+  3. 
