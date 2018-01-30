@@ -29,70 +29,54 @@ public class HumanPlayer implements Player {
 		Coordinate m;
 		int row = -1, column = -1;
 		String response;
-		char colChar;
 		
 		in = new Scanner(System.in);
 		
-		System.out.println("What's your move, hotshot?\n");
+		System.out.println("What's your move, hotshot?\n" +
+		"(please submit in the format: ROW, COLUMN)\n");
 		
 		while (true) {
 			
-			// row
-			System.out.print("row: ");
+			System.out.print("Move: ");
 			
-			if (in.hasNextInt()) {
-				
-				row = in.nextInt();
-				in.nextLine();
-				
-			} else {
-				
-				System.out.println("Try a decimal number from 0 to 18.\n");
-				continue;
-			}
-			
-			if (row < 0 || row > 18) {
-				System.out.println("Try a decimal number from 0 to 18.\n");
-				continue;
-			}	
-			
-			// column
-			System.out.print("column: ");
 			response = in.nextLine();
 			
-			if (response.length() > 1) {
-				System.out.println("Try a single letter from 'A' to 'S'.\n");
-				continue;
-			}
-			
-			response = response.toUpperCase();
-			colChar = response.charAt(0);
-			column = (int) colChar;
-			column = column - 65;
-			
-			if (column < 0 || column > 18) {
-				System.out.println("Try a single letter from 'A' to 'S'.\n");
-				continue;
+			if (response.length() == 4 || response.length() == 5) {
+				
+				String[] components = response.split(", ");
+				
+				if (components.length != 2) {
+					System.out.println("Invalid format.");
+					continue;
+				}
+				
+				try {
+					row = Integer.parseInt(components[0]);
+				} catch (NumberFormatException n) {
+					System.out.println("Invalid row.");
+					continue;
+				}
+				
+				if (row < 0 || row > 18) {
+					System.out.println("Invalid row.");
+					continue;
+				}	
+				
+				components[1] = components[1].toUpperCase();
+				column = (int) components[1].charAt(0);;
+				column = column - 65;
+				
+				if (column < 0 || column > 18) {
+					System.out.println("Invalid column.");
+					continue;
+				}
 			}
 			
 			break;
 		}
-		
-		in.close();
-		
-		// try initializing return coordinates, make recursive call if failure
-		try {
-			if (row < 0 || column < 0) {
-				throw new UnsupportedOperationException();
-			}
-			m = new MyCoordinate(row, column);
-			return m;
-		} catch (IllegalArgumentException e) {
-			System.out.println("Invalid move! Try again.");
-			return this.getMove(b);
-		}
-		
-		
+				
+		m = new MyCoordinate(row, column);
+		return m;
 	}
 
 	@Override

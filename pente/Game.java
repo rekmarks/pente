@@ -44,6 +44,8 @@ public class Game {
 			move = red.getMove(board);
 			board.placeStone(Stone.RED, move);
 			
+			if (board.gameOver()) break;
+			
 			System.out.println(board);
 			System.out.println("Yellow's turn");
 			
@@ -53,6 +55,8 @@ public class Game {
 		} while (!board.gameOver());
 		
 		in.close();
+		
+		System.out.println(board);
 		
 		if (board.getWinner() == Stone.RED) {
 			System.out.println("Red player wins!");
