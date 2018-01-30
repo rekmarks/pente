@@ -1,16 +1,36 @@
 package pente;
 
+import interfaces.Coordinate;
 import interfaces.Stone;
 
 public class Test {
-
+	
 	public static void main(String[] args) {
+		
+		MyBoard b = new MyBoard();
+		
+		HumanPlayer sune = new HumanPlayer(Stone.RED);
+		
+		Coordinate c = sune.getMove(b);
+		
+		int row = c.getRow();
+		int col = c.getColumn();
+		
+		System.out.println(row);
+		System.out.println(col);
+	}
+
+	public static void stones() {
 		
 		MyBoard board = new MyBoard();
 		
 		MyCoordinate c;
 		
 		c = new MyCoordinate(9,9);
+		board.placeStone(Stone.RED, c);
+		c = new MyCoordinate(1,1);
+		board.placeStone(Stone.YELLOW, c);
+		c = new MyCoordinate(0,0);
 		board.placeStone(Stone.RED, c);
 		
 //		for (int i = 5; i < 10; i++) {
@@ -106,9 +126,9 @@ public class Test {
 		c = new MyCoordinate(15, 17);
 		board.placeStone(Stone.YELLOW, c);
 		c = new MyCoordinate(16, 16);
-		board.placeStone(Stone.RED, c);
+		board.placeStone(Stone.YELLOW, c);
 		c = new MyCoordinate(17, 15);
-		board.placeStone(Stone.RED, c);
+		board.placeStone(Stone.YELLOW, c);
 		c = new MyCoordinate(18, 14);
 		board.placeStone(Stone.YELLOW, c);
 		
@@ -116,6 +136,7 @@ public class Test {
 		System.out.println("\n");
 		
 		if (board.gameOver()) System.out.println(board.getWinner());
+		
 	}
 
 }

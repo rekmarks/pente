@@ -15,8 +15,10 @@ public class MyBoard implements Board {
 	 */
 	public MyBoard() {
 		
-		moveNumber = 1;
+		moveNumber = 0;
 		winner = Stone.EMPTY;
+		redCaptures = 0;
+		yellowCaptures = 0;
 		
 		board = new Stone[19][19];
 		for (int i = 0; i < 19; i++) {
@@ -38,19 +40,19 @@ public class MyBoard implements Board {
 		if (s == Stone.EMPTY) throw new IllegalArgumentException();
 		
 		// ensure player moves during correct turn
-		if (moveNumber % 2 != 0 && s != Stone.RED) throw new IllegalArgumentException();
+//		if (moveNumber % 2 == 0 && s != Stone.RED) throw new IllegalArgumentException();
 		
 		// ensure intersection is unoccupied
 		if (pieceAt(c) != Stone.EMPTY) throw new IllegalArgumentException();
 		
 		// ensure red places stone in center on first move
-		if (moveNumber == 1 && (c.getRow() != 9 || c.getColumn() != 9) ) 
+		if (moveNumber == 0 && (c.getRow() != 9 || c.getColumn() != 9) ) 
 			throw new IllegalArgumentException();
 		
 		// ensure red can't place stone within 3 intersections of center on 
 		// their second move
-		if (moveNumber == 3 && (	(c.getRow() < 13 && c.getRow() > 5 ) 
-							 ||	(c.getColumn() < 13 && c.getColumn() > 5 ) ))
+		if (moveNumber == 2 && (	(c.getRow() < 13 && c.getRow() > 5 ) 
+							 &&	(c.getColumn() < 13 && c.getColumn() > 5 ) ))
 			throw new IllegalArgumentException();
 		
 		// if we get here, move is legal, so make it
@@ -58,7 +60,6 @@ public class MyBoard implements Board {
 		moveNumber++;
 		
 		// check for captures
-		
 		for (int i = 0; i< directions.length; i++) {
 			
 			if (capture(c, directions[i][0], directions[i][1])) {
