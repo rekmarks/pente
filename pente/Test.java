@@ -13,11 +13,10 @@ public class Test {
 		
 		Coordinate c = sune.getMove(b);
 		
+		System.out.println(c);
+		
 		int row = c.getRow();
 		int col = c.getColumn();
-		
-		System.out.println(row);
-		System.out.println(col);
 	}
 
 	public static void stones() {

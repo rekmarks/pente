@@ -6,6 +6,11 @@ import interfaces.Coordinate;
 import interfaces.Player;
 import interfaces.Stone;
 
+/**
+ * @author rekmarks
+ * 
+ * User interface with high-level game logic for Pente.
+ */
 public class Game {
 	
 	public static void main(String[] args) {
@@ -13,6 +18,7 @@ public class Game {
 		// set up game variables
 		MyBoard board = new MyBoard();
 		Player red, yellow;
+		Coordinate move;
 		
 		Scanner in = new Scanner(System.in);
 		System.out.println("\nWelcome to Pente. Are you playing red or yellow?");
@@ -33,27 +39,54 @@ public class Game {
 			response = in.nextLine();
 		}
 		
-		Coordinate move;
+		System.out.println("For reference, the middle of the board is: 9, J");
 		
 		// main game loop
+		// handles IllegalArgumentException from board but not
+		// IllegalStateException if a player moves during the wrong turn
+		// that shouldn't be possible, though
 		do {
 			
 			System.out.println(board);
 			System.out.println("Red's turn");
 			
-			move = red.getMove(board);
-			board.placeStone(Stone.RED, move);
+			// loop red move request until valid move is made
+			while (true) {
+				
+				try {
+					move = red.getMove(board);
+					board.placeStone(Stone.RED, move);					
+				} catch (IllegalArgumentException e) {
+					System.out.println("Invalid move!");
+					continue;
+				}
+				break;
+			}
 			
 			if (board.gameOver()) break;
 			
 			System.out.println(board);
 			System.out.println("Yellow's turn");
 			
-			move = yellow.getMove(board);
-			board.placeStone(Stone.YELLOW, move);
+			// loop yellow move request until valid move is made
+			while (true) {
+				
+				try {
+					move = yellow.getMove(board);
+					board.placeStone(Stone.YELLOW, move);					
+				} catch (IllegalArgumentException e) {
+					System.out.println("Invalid move!");
+					continue;
+				}
+				break;
+			}
 			
 		} while (!board.gameOver());
 		
+		// This closes System.in, which we really don't want to except at
+		// the very end of our program.
+		// It took me a while to figure that out.
+		// I'm not bitter.
 		in.close();
 		
 		System.out.println(board);

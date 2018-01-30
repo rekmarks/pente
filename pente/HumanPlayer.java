@@ -33,14 +33,16 @@ public class HumanPlayer implements Player {
 		in = new Scanner(System.in);
 		
 		System.out.println("What's your move, hotshot?\n" +
-		"(please submit in the format: ROW, COLUMN)\n");
+		"(please submit in the format: ROW, COLUMN)\n"); // note format
 		
+		// loop until move in valid format is submitted
 		while (true) {
 			
 			System.out.print("Move: ");
 			
 			response = in.nextLine();
 			
+			// the response will be either 4 or 5 long
 			if (response.length() == 4 || response.length() == 5) {
 				
 				String[] components = response.split(", ");
@@ -50,6 +52,7 @@ public class HumanPlayer implements Player {
 					continue;
 				}
 				
+				// row
 				try {
 					row = Integer.parseInt(components[0]);
 				} catch (NumberFormatException n) {
@@ -62,9 +65,10 @@ public class HumanPlayer implements Player {
 					continue;
 				}	
 				
+				// column
 				components[1] = components[1].toUpperCase();
-				column = (int) components[1].charAt(0);;
-				column = column - 65;
+				column = (int) components[1].charAt(0); // get char
+				column = column - 65; // subtract ASCII value of A
 				
 				if (column < 0 || column > 18) {
 					System.out.println("Invalid column.");
@@ -74,7 +78,7 @@ public class HumanPlayer implements Player {
 			
 			break;
 		}
-				
+		
 		m = new MyCoordinate(row, column);
 		return m;
 	}

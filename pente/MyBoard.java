@@ -3,6 +3,12 @@ import interfaces.Board;
 import interfaces.Coordinate;
 import interfaces.Stone;
 
+/**
+ * @author rekmarks
+ * 
+ * Board implementation. All thrown Exceptions are IllegalArgument except
+ * for player moving during wrong turn.
+ */
 public class MyBoard implements Board {
 	
 	private Stone[][] board;
@@ -12,6 +18,9 @@ public class MyBoard implements Board {
 	
 	/**
 	 * Constructor
+	 * 
+	 * Initializes instance variables.
+	 * No values are arbitrary.
 	 */
 	public MyBoard() {
 		
@@ -40,7 +49,8 @@ public class MyBoard implements Board {
 		if (s == Stone.EMPTY) throw new IllegalArgumentException();
 		
 		// ensure player moves during correct turn
-//		if (moveNumber % 2 == 0 && s != Stone.RED) throw new IllegalArgumentException();
+		// unique Exception
+		if (moveNumber % 2 == 0 && s != Stone.RED) throw new IllegalStateException();
 		
 		// ensure intersection is unoccupied
 		if (pieceAt(c) != Stone.EMPTY) throw new IllegalArgumentException();
