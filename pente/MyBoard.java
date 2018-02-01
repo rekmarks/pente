@@ -6,8 +6,9 @@ import interfaces.Stone;
 /**
  * @author rekmarks
  * 
- * Board implementation. All thrown Exceptions are IllegalArgument except
- * for player moving during wrong turn.
+ * Board implementation. Throws IllegalArgumentException in placeStone
+ * for recoverable errors, IllegalStateException otherwise (one case in
+ * placeStone and all exceptions in all other methods).
  */
 public class MyBoard implements Board {
 	
@@ -49,7 +50,7 @@ public class MyBoard implements Board {
 		if (s == Stone.EMPTY) throw new IllegalArgumentException();
 		
 		// ensure player moves during correct turn
-		// unique Exception
+		// IllegalStateException
 		if (moveNumber % 2 == 0 && s != Stone.RED) throw new IllegalStateException();
 		
 		// ensure intersection is unoccupied
@@ -91,7 +92,7 @@ public class MyBoard implements Board {
 		// input validation
 		if (	   (rowDir < -1 || rowDir > 1) 
 			|| (colDir < -1 || colDir > 1) 
-			|| (rowDir == 0 && colDir == 0) ) throw new IllegalArgumentException();
+			|| (rowDir == 0 && colDir == 0) ) throw new IllegalStateException();
 		
 		// coordinate of stone 3 intersections away  in desired direction
 		Coordinate p = new MyCoordinate(c.getRow() + 3 * rowDir, c.getColumn() + 3 * colDir);
@@ -109,7 +110,7 @@ public class MyBoard implements Board {
 				
 				Coordinate q = new MyCoordinate(c.getRow() + rowDir, c.getColumn() + colDir);
 				
-				if (pieceAt(q) != Stone.EMPTY && pieceAt(p) != pieceAt(c)) {
+				if (pieceAt(q) != Stone.EMPTY && pieceAt(q) != pieceAt(c)) {
 					
 					// capture if stone one intersection away is the opposite of
 					// newly placed stone
@@ -129,7 +130,7 @@ public class MyBoard implements Board {
 	 */
 	private void removeStone(Coordinate c) {
 		
-		if (isOutOfBounds(c)) throw new IllegalArgumentException();
+		if (isOutOfBounds(c)) throw new IllegalStateException();
 		
 		board[c.getRow()][c.getColumn()] = Stone.EMPTY;
 	}
@@ -137,7 +138,7 @@ public class MyBoard implements Board {
 	@Override
 	public Stone pieceAt(Coordinate c) {
 		
-		if (isOutOfBounds(c)) throw new IllegalArgumentException();
+		if (isOutOfBounds(c)) throw new IllegalStateException();
 		
 		return board[c.getRow()][c.getColumn()];
 	}
@@ -155,7 +156,7 @@ public class MyBoard implements Board {
 	@Override
 	public boolean isEmpty(Coordinate c) {
 		
-		if (isOutOfBounds(c)) throw new IllegalArgumentException();
+		if (isOutOfBounds(c)) throw new IllegalStateException();
 		
 		return (board[c.getRow()][c.getColumn()] == Stone.EMPTY);		
 	}
@@ -248,7 +249,7 @@ public class MyBoard implements Board {
 	private Stone checkFive(int direction, int r, int c) {
 		
 		// either rows, columns, or ascending or descending diagonals
-		if (direction < 0 || direction > 3) throw new IllegalArgumentException();
+		if (direction < 0 || direction > 3) throw new IllegalStateException();
 				
 		Stone current, previous = Stone.EMPTY;
 		int count = 0, row = r, column = c;
